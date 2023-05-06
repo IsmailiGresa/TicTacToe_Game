@@ -1,6 +1,6 @@
 
-<<<<<<< Updated upstream
-=======
+
+
 import PySimpleGUI as sg
 
 class TicTacToe:
@@ -15,6 +15,7 @@ class TicTacToe:
 
         if event in (sg.WIN_CLOSED, 'Exit'):
             return None
+
         
     def new_game(self, adversary_type=1, first_player=1, x_cells=3, y_cells=3, is_swap2=False,
                  player_names=["x", "o"]):
@@ -52,8 +53,11 @@ class TicTacToe:
             else:
                                  
 
+
 if __name__ == '__main__':
     Game = TicTacToe()
     a, b, c, d, e, f = Game.Information()
+
     Game.NewGame(a, b, c, d, e, f)
->>>>>>> Stashed changes
+
+
