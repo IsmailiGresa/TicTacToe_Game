@@ -1,4 +1,3 @@
-
 import PySimpleGUI as sg
 
 class TicTacToe:
@@ -143,9 +142,27 @@ def init_graphics(self):
                 counter += 1
             init_layout.append(new_line)
         self.layout = init_layout
+
+def generate_move(self, evaluated_matrix, player):
+        generated_matrix = []
+        for y in range(self.y_cells):
+            for x in range(self.x_cells):
+                if (x + 1 < self.x_cells and evaluated_matrix[y][x + 1] != 0) or \
+                        (x + 1 < self.x_cells and y + 1 < self.y_cells and evaluated_matrix[y + 1][
+                            x + 1] != 0) or \
+                        (x + 1 < self.x_cells and y - 1 >= 0 and evaluated_matrix[y - 1][x + 1] != 0) or \
+                        (x - 1 >= 0 and y + 1 < self.y_cells and evaluated_matrix[y + 1][x - 1] != 0) or \
+                        (x - 1 >= 0 and y - 1 >= 0 and evaluated_matrix[y - 1][x - 1] != 0) or \
+                        (x - 1 >= 0 and evaluated_matrix[y][x - 1] != 0) or \
+                        (y + 1 < self.y_cells and evaluated_matrix[y + 1][x] != 0) or \
+                        (y - 1 >= 0 and evaluated_matrix[y - 1][x] != 0):
+                    if evaluated_matrix[y][x] == 0:
+                        aux = [[item for item in line] for line in evaluated_matrix]
+                        aux[y][x] = player
+                        generated_matrix.append([aux, x, y])
+        return generated_matrix
         
 if __name__ == '__main__':
     Game = TicTacToe()
     a, b, c, d, e, f = Game.Information()
     Game.NewGame(a, b, c, d, e, f)
-
