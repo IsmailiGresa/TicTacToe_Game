@@ -1,6 +1,3 @@
-
-<<<<<<< Updated upstream
-=======
 import PySimpleGUI as sg
 
 class TicTacToe:
@@ -169,5 +166,3 @@ if __name__ == '__main__':
     Game = TicTacToe()
     a, b, c, d, e, f = Game.Information()
     Game.NewGame(a, b, c, d, e, f)
-
->>>>>>> Stashed changes
