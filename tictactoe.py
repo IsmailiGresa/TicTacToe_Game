@@ -138,3 +138,90 @@ def init_graphics(self):
                 counter += 1
             init_layout.append(new_line)
         self.layout = init_layout
+        
+        def generate_move(self, evaluated_matrix, player):
+        generated_matrix = []
+        for y in range(self.y_cells):
+            for x in range(self.x_cells):
+                if (x + 1 < self.x_cells and evaluated_matrix[y][x + 1] != 0) or \
+                        (x + 1 < self.x_cells and y + 1 < self.y_cells and evaluated_matrix[y + 1][
+                            x + 1] != 0) or \
+                        (x + 1 < self.x_cells and y - 1 >= 0 and evaluated_matrix[y - 1][x + 1] != 0) or \
+                        (x - 1 >= 0 and y + 1 < self.y_cells and evaluated_matrix[y + 1][x - 1] != 0) or \
+                        (x - 1 >= 0 and y - 1 >= 0 and evaluated_matrix[y - 1][x - 1] != 0) or \
+                        (x - 1 >= 0 and evaluated_matrix[y][x - 1] != 0) or \
+                        (y + 1 < self.y_cells and evaluated_matrix[y + 1][x] != 0) or \
+                        (y - 1 >= 0 and evaluated_matrix[y - 1][x] != 0):
+                    if evaluated_matrix[y][x] == 0:
+                        aux = [[item for item in line] for line in evaluated_matrix]
+                        aux[y][x] = player
+                        generated_matrix.append([aux, x, y])
+        return generated_matrix
+
+def better_generate_move(self, evaluated_matrix, player):
+        generated_matrix = []
+        chain2 = []
+        for axis in range(4):
+            if axis == 0:
+                x_mod = 1
+                y_mod = 0
+            if axis == 1:
+                x_mod = 0
+                y_mod = 1
+            if axis == 2:
+                x_mod = 1
+                y_mod = 1
+            if axis == 3:
+                x_mod = -1
+                y_mod = 1
+            aux = [[item for item in line] for line in evaluated_matrix]
+            for y in range(self.y_cells):
+                for x in range(self.x_cells):
+                    if (0 <= y + y_mod < self.y_cells) and (0 <= x + x_mod < self.x_cells):
+                        if aux[y + y_mod][x + x_mod] < 0 and aux[y][x] < 0:
+                            aux[y + y_mod][x + x_mod] *= 10 * abs(aux[y][x])
+                        if aux[y + y_mod][x + x_mod] > 0 and aux[y][x] > 0:
+                            aux[y + y_mod][x + x_mod] *= 10 * abs(aux[y][x])
+
+            for y in range(self.y_cells):
+                for x in range(self.x_cells):
+                    if abs(aux[y][x]) >= 10:
+                        # the place at the end of a chain
+                                if self.y_cells > y + y_mod > 0 < x + x_mod < self.x_cells and \
+                                        aux[y + y_mod][x + x_mod] == 0:
+                                    to_add = [[item for item in line] for line in evaluated_matrix]
+                                    to_add[y + y_mod][x + x_mod] = player
+                                    chain2.append([to_add, x + x_mod, y + y_mod])
+                                # the place at the start of a 2 piece chain
+                                if self.y_cells > y - 2 * y_mod > 0 < x - 2 * x_mod < self.x_cells and \
+                                        aux[y - 2 * y_mod][x - 2 * x_mod] == 0:
+                                    to_add = [[item for item in line] for line in evaluated_matrix]
+                                    to_add[y - 2 * y_mod][x - 2 * x_mod] = player
+                                    chain2.append([to_add, x - 2 * x_mod, y - 2 * y_mod])
+        for x in chain2:
+            generated_matrix.append(x)
+
+        if len(generated_matrix) == 0:
+            for y in range(self.y_cells):
+                for x in range(self.x_cells):
+                    if (x + 1 < self.x_cells and evaluated_matrix[y][x + 1] != 0) or \
+                            (x + 1 < self.x_cells and y + 1 < self.y_cells and evaluated_matrix[y + 1][
+                                x + 1] != 0) or \
+                            (x + 1 < self.x_cells and y - 1 >= 0 and evaluated_matrix[y - 1][x + 1] != 0) or \
+                            (x - 1 >= 0 and y + 1 < self.y_cells and evaluated_matrix[y + 1][x - 1] != 0) or \
+                            (x - 1 >= 0 and y - 1 >= 0 and evaluated_matrix[y - 1][x - 1] != 0) or \
+                            (x - 1 >= 0 and evaluated_matrix[y][x - 1] != 0) or \
+                            (y + 1 < self.y_cells and evaluated_matrix[y + 1][x] != 0) or \
+                            (y - 1 >= 0 and evaluated_matrix[y - 1][x] != 0):
+                        if evaluated_matrix[y][x] == 0:
+                            aux = [[item for item in line] for line in evaluated_matrix]
+                            aux[y][x] = player
+                            generated_matrix.append([aux, x, y])
+                            break
+
+        return generated_matrix
+        
+if __name__ == '__main__':
+    Game = TicTacToe()
+    a, b, c, d, e, f = Game.Information()
+    Game.NewGame(a, b, c, d, e, f)
