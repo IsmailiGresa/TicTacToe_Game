@@ -249,7 +249,7 @@ def better_generate_move(self, evaluated_matrix, player):
                             break
 
         return generated_matrix
-
+        
 if __name__ == '__main__':
     Game = TicTacToe()
     a, b, c, d, e, f = Game.Information()
