@@ -1,23 +1,8 @@
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
 import PySimpleGUI as sg
 
 class TicTacToe:
-    def Information(self):
-        event = sg.Window('Tic Tac Toe',
-                                  [[sg.Text('You (X):'), sg.InputText(), ],
-                                   [sg.Text('Computer (O):'), sg.InputText()],
-                                   [sg.Radio('X First', "radioX", default=True, size=(5, 5)),
-                                    sg.Radio('O First', "radioO")],
-                                   [sg.Button("Player vs Player")]
-                                   ], margins=(50, 150)).read(close=True)
 
-        if event in (sg.WIN_CLOSED, 'Exit'):
-            return None
-
-    def new_game(self, adversary_type=1, first_player=1, x_cells=3, y_cells=3, is_swap2=False,
+    def NewGame(self, adversary_type=1, first_player=1, x_cells=3, y_cells=3, is_swap2=False,
                  player_names=["x", "o"]):
         print(first_player)
         self.x_cells = x_cells
@@ -119,7 +104,43 @@ class TicTacToe:
                         f"Player at turn: {self.player_names[self.player_to_put_piece]}")
                     self.next_click(first_player)
         else:
-            self.next_click(-1)               
+            self.next_click(-1)  
+
+    def Information(self):
+        event, values = sg.Window('Tic Tac Toe',
+                                  [[sg.Text('Player1 name (white):'), sg.InputText()],
+                                   [sg.Text('Player2 name (black):'), sg.InputText()],
+                                   [sg.Radio('black First', "RADIO1", default=True, size=(10, 1)),sg.Radio('white First', "RADIO1")],
+                                   [sg.Radio('Swap2 start', "RADIO2", default=True, size=(10, 1)),sg.Radio('Regular start', "RADIO2")],
+                                   [sg.Text('table width: '), sg.Spin([i for i in range(3, 5)], initial_value=3)],
+                                    [sg.Text('table height'), sg.Spin([i for i in range(3, 5)], initial_value=3)],
+                                   [sg.Button("Player vs Player"), sg.Button("easy"), sg.Button("medium"),sg.Button("Single Player"), ]
+                                   ], margins=(40, 25)).read(close=True)
+
+        if event in (sg.WIN_CLOSED, 'Exit'):
+            return None
+        adversary_type = 0
+        if event == "easy":
+            adversary_type = 1
+        if event == "medium":
+            adversary_type = 2
+        if event == "Single Player":
+            adversary_type = 3
+
+        if values[2]:
+            first_player = 1
+        else:
+            first_player = -1
+
+        values_list = []
+        for key, value in values.items():
+            values_list.append(value)
+        print(values_list)
+        if int(values_list[6]) in range(3, 5) and int(values_list[7]) in range(3, 5):
+            return adversary_type, first_player, int(values_list[6]), int(values_list[7]), values[4], values_list[0:2]
+        sg.popup("Table width and height must be  3 < value < 20 ")
+        return self.Information()
+                        
 def init_graphics(self):
         init_layout = []
         w, h = sg.Window.get_screen_size()  # scale with screen size
