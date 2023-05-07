@@ -139,23 +139,23 @@ def init_graphics(self):
             init_layout.append(new_line)
         self.layout = init_layout
         
-        def generate_move(self, evaluated_matrix, player):
+def generate_move(self, evaluated_matrix, player):
         generated_matrix = []
         for y in range(self.y_cells):
             for x in range(self.x_cells):
                 if (x + 1 < self.x_cells and evaluated_matrix[y][x + 1] != 0) or \
-                        (x + 1 < self.x_cells and y + 1 < self.y_cells and evaluated_matrix[y + 1][
-                            x + 1] != 0) or \
-                        (x + 1 < self.x_cells and y - 1 >= 0 and evaluated_matrix[y - 1][x + 1] != 0) or \
-                        (x - 1 >= 0 and y + 1 < self.y_cells and evaluated_matrix[y + 1][x - 1] != 0) or \
-                        (x - 1 >= 0 and y - 1 >= 0 and evaluated_matrix[y - 1][x - 1] != 0) or \
-                        (x - 1 >= 0 and evaluated_matrix[y][x - 1] != 0) or \
-                        (y + 1 < self.y_cells and evaluated_matrix[y + 1][x] != 0) or \
-                        (y - 1 >= 0 and evaluated_matrix[y - 1][x] != 0):
+                    (x + 1 < self.x_cells and y + 1 < self.y_cells and evaluated_matrix[y + 1][
+                        x + 1] != 0) or \
+                    (x + 1 < self.x_cells and y - 1 >= 0 and evaluated_matrix[y - 1][x + 1] != 0) or \
+                    (x - 1 >= 0 and y + 1 < self.y_cells and evaluated_matrix[y + 1][x - 1] != 0) or \
+                    (x - 1 >= 0 and y - 1 >= 0 and evaluated_matrix[y - 1][x - 1] != 0) or \
+                    (x - 1 >= 0 and evaluated_matrix[y][x - 1] != 0) or \
+                    (y + 1 < self.y_cells and evaluated_matrix[y + 1][x] != 0) or \
+                    (y - 1 >= 0 and evaluated_matrix[y - 1][x] != 0):
                     if evaluated_matrix[y][x] == 0:
                         aux = [[item for item in line] for line in evaluated_matrix]
                         aux[y][x] = player
-                        generated_matrix.append([aux, x, y])
+        generated_matrix.append([aux, x, y])
         return generated_matrix
 
 def better_generate_move(self, evaluated_matrix, player):
@@ -218,10 +218,46 @@ def better_generate_move(self, evaluated_matrix, player):
                             aux[y][x] = player
                             generated_matrix.append([aux, x, y])
                             break
-
         return generated_matrix
-        
+
+def valid_move(self, event):
+    event = int(event)
+    y = int(event / self.x_cells)
+    x = event % self.x_cells
+    return self.matrix[y][x] == 0
+
+def update_matrix(self, player, event):
+    event = int(event)
+    y = int(event / self.x_cells)
+    x = event % self.x_cells
+    self.matrix[y][x] = player
+
+def draw(self):
+    for i in self.matrix:
+        for j in i:
+            if j == 0:
+                return 0
+    return 1
+
+def ended(self, evaluated_matrix):
+    for x in range(self.x_cells):
+        for y in range(self.y_cells):
+            if evaluated_matrix[y][x] != 0:
+                if x < self.x_cells - 2:
+                    if evaluated_matrix[y][x] == evaluated_matrix[y][x + 1] == evaluated_matrix[y][x + 2]:
+                        return True
+                if y < self.y_cells - 2:
+                    if evaluated_matrix[y][x] == evaluated_matrix[y + 1][x] == evaluated_matrix[y + 2][x]:
+                        return True
+                if x < self.x_cells - 2 and y < self.y_cells - 2:
+                    if evaluated_matrix[y][x] == evaluated_matrix[y + 1][x + 1] == evaluated_matrix[y + 2][x + 2]:
+                        return True
+                    if evaluated_matrix[y + 2][x] != 0:
+                        if evaluated_matrix[y + 2][x] == evaluated_matrix[y + 1][x + 1] == evaluated_matrix[y][x + 2]:
+                            return True
+    return False
 if __name__ == '__main__':
     Game = TicTacToe()
     a, b, c, d, e, f = Game.Information()
     Game.NewGame(a, b, c, d, e, f)
+
