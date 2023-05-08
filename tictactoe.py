@@ -33,6 +33,12 @@ class TicTacToe:
         self.player_to_put_piece = 0
         self.player_names = []
 
+    def init_table(self):
+        self.matrix = np.zeros((self.y_cells, self.x_cells))
+        if self.adversary_type != 0 and self.first_player == 1:
+            self.matrix[int(self.y_cells / 2) - 1][int(self.x_cells / 2)] = 1
+        return None
+
     def init_graphics(self):
         init_layout = []
         w, h = sg.Window.get_screen_size()  # scale with screen size
