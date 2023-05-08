@@ -20,12 +20,20 @@ def button_image(width, height, symbol):
     return data
 
 class TicTacToe:
+    def __init__(self):
+        self.size = 0
+        self.layout = []
+        self.matrix = []
+        self.x_cells = 3
+        self.y_cells = 3
+        self.adversary_type = 0
+        self.window = sg.Window
+        self.first_player = -1
+        self.is_swap2 = 0
+        self.player_to_put_piece = 0
+        self.player_names = []
 
-<<<<<<< Updated upstream
-    def new_game(self, adversary_type=1, first_player=1, x_cells=3, y_cells=3, is_swap2=False, player_names=["x", "o"]): #maybe this is useless
-=======
     def NewGame(self, adversary_type=1, first_player=1, x_cells=3, y_cells=3, is_swap2=False, player_names=["x", "o"]): #maybe this is useless
->>>>>>> Stashed changes
         print(first_player)
         self.x_cells = x_cells
         self.y_cells = y_cells
@@ -95,11 +103,7 @@ class TicTacToe:
             a, b, c, d, e, f = self.get_game_info()
             self.new_game(a, b, c, d, e, f)
             return None
-<<<<<<< Updated upstream
-     
-=======
-
->>>>>>> Stashed changes
+        
         event, values = self.window.read()
         if self.valid_move(event):
             self.update_button(player, self.window[event])
