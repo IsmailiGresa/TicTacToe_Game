@@ -1,8 +1,31 @@
 import PySimpleGUI as sg
+import numpy as np
+from io import BytesIO
+from PIL import Image, ImageDraw
+
+def button_image(width, height, symbol):
+    im = Image.new(mode='RGBA', size=(width, height), color=(255, 255, 255, 0))
+    image = ImageDraw.Draw(im, mode='RGBA')
+    line_width = int(width * 0.2)
+    image.rectangle((2, 2, width - 2, height - 2), outline='black', width=2)
+    if symbol == 'x':
+        image.line((line_width, line_width, width - line_width, height - line_width), fill='red', width=6)
+        image.line((line_width, height - line_width, width - line_width, line_width), fill='red', width=6)
+    elif symbol == 'o':
+        image.ellipse((line_width, line_width, width - line_width, height - line_width), outline='blue', width=6)
+        
+    with BytesIO() as output:
+        im.save(output, format="PNG")
+        data = output.getvalue()
+    return data
 
 class TicTacToe:
 
+<<<<<<< Updated upstream
     def new_game(self, adversary_type=1, first_player=1, x_cells=3, y_cells=3, is_swap2=False, player_names=["x", "o"]): #maybe this is useless
+=======
+    def NewGame(self, adversary_type=1, first_player=1, x_cells=3, y_cells=3, is_swap2=False, player_names=["x", "o"]): #maybe this is useless
+>>>>>>> Stashed changes
         print(first_player)
         self.x_cells = x_cells
         self.y_cells = y_cells
@@ -72,7 +95,11 @@ class TicTacToe:
             a, b, c, d, e, f = self.get_game_info()
             self.new_game(a, b, c, d, e, f)
             return None
+<<<<<<< Updated upstream
      
+=======
+
+>>>>>>> Stashed changes
         event, values = self.window.read()
         if self.valid_move(event):
             self.update_button(player, self.window[event])
