@@ -279,6 +279,37 @@ def ended(self, evaluated_matrix):
                         if evaluated_matrix[y + 2][x] == evaluated_matrix[y + 1][x + 1] == evaluated_matrix[y][x + 2]:
                             return True
     return False
+
+def get_score(self, evaluated_matrix, axis):
+    if axis == 0:
+        x_mod = 1
+        y_mod = 0
+    if axis == 1:
+        x_mod = 0
+        y_mod = 1
+    if axis == 2:
+        x_mod = 1
+        y_mod = 1
+    if axis == 3:
+        x_mod = -1
+        y_mod = 1
+    aux = [[item for item in line] for line in evaluated_matrix]
+    for y in range(self.y_cells):
+        for x in range(self.x_cells):
+            if (0 <= y + y_mod < self.y_cells) and (0 <= x + x_mod < self.x_cells):
+                if aux[y + y_mod][x + x_mod] < 0 and aux[y][x] < 0:
+                    aux[y + y_mod][x + x_mod] *= 10 * abs(aux[y][x])
+                if aux[y + y_mod][x + x_mod] > 0 and aux[y][x] > 0:
+                    aux[y + y_mod][x + x_mod] *= 10 * abs(aux[y][x])
+    return np.sum(aux)
+
+def evaluate_state(self, evaluated_matrix):
+    score = self.get_score(evaluated_matrix, 0) + self.get_score(evaluated_matrix, 1)
+    if self.adversary_type > 1:
+        score += self.get_score(evaluated_matrix, 2)
+    if self.adversary_type > 2:
+        score += self.get_score(evaluated_matrix, 3)
+    return score
 if __name__ == '__main__':
     Game = TicTacToe()
     a, b, c, d, e, f = Game.Information()
