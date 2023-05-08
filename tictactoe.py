@@ -33,6 +33,33 @@ class TicTacToe:
         self.player_to_put_piece = 0
         self.player_names = []
 
+    def init_graphics(self):
+        init_layout = []
+        w, h = sg.Window.get_screen_size()  # scale with screen size
+        self.size = int(min((w / self.x_cells), (h / self.y_cells) * 0.75))
+        counter = 0
+        init_layout.append(
+            [sg.Text(f"Player at turn: {self.player_names[self.player_to_put_piece]}", key='the_current_player')])
+        for line in self.matrix:
+            new_line = []
+            for item in line:
+                if self.adversary_type != 0 and self.first_player == 1:
+                    if counter == int(self.y_cells / 2
+                                      - 1) * self.x_cells + int(self.x_cells / 2):
+                        new_line.append(sg.Button("", key=f"{counter}", button_color=('light gray', 'light gray'),
+                                                  image_data=button_image(self.size, self.size, 'black', False),
+                                                  border_width=0))
+                    else:
+                        new_line.append(sg.Button("", key=f"{counter}", button_color=('light gray', 'light gray'),
+                                                  image_data=button_image(self.size, self.size, 'gray'),
+                                                  border_width=0))
+                else:
+                    new_line.append(sg.Button("", key=f"{counter}", button_color=('light gray', 'light gray'),
+                                              image_data=button_image(self.size, self.size, 'gray'), border_width=0))
+                counter += 1
+            init_layout.append(new_line)
+        self.layout = init_layout
+
     def NewGame(self, adversary_type=1, first_player=1, x_cells=3, y_cells=3, is_swap2=False, player_names=["x", "o"]): #maybe this is useless
         print(first_player)
         self.x_cells = x_cells
@@ -54,21 +81,14 @@ class TicTacToe:
                                   [[sg.Text('Player1 name (white):'), sg.InputText()],
                                    [sg.Text('Player2 name (black):'), sg.InputText()],
                                    [sg.Radio('black First', "RADIO1", default=True, size=(10, 1)),sg.Radio('white First', "RADIO1")],
-                                   [sg.Radio('Swap2 start', "RADIO2", default=True, size=(10, 1)),sg.Radio('Regular start', "RADIO2")],
-                                   [sg.Text('table width: '), sg.Spin([i for i in range(3, 5)], initial_value=3)],
-                                    [sg.Text('table height'), sg.Spin([i for i in range(3, 5)], initial_value=3)],
-                                   [sg.Button("Player vs Player"), sg.Button("easy"), sg.Button("medium"),sg.Button("Single Player"), ]
+                                   [sg.Button("Player vs Player"), sg.Button("Single Player"), ]
                                    ], margins=(40, 25)).read(close=True)
 
         if event in (sg.WIN_CLOSED, 'Exit'):
             return None
         adversary_type = 0
-        if event == "easy":
-            adversary_type = 1
-        if event == "medium":
-            adversary_type = 2
         if event == "Single Player":
-            adversary_type = 3
+            adversary_type = 1
 
         if values[2]:
             first_player = 1
@@ -81,7 +101,6 @@ class TicTacToe:
         print(values_list)
         if int(values_list[6]) in range(3, 5) and int(values_list[7]) in range(3, 5):
             return adversary_type, first_player, int(values_list[6]), int(values_list[7]), values[4], values_list[0:2]
-        sg.popup("Table width and height must be  3 < value < 20 ")
         return self.Information()
     
     def next_click(self, player):
@@ -142,33 +161,6 @@ class TicTacToe:
                 self.next_click(player)
         else:
             self.next_click(player)
-                        
-def init_graphics(self):
-        init_layout = []
-        w, h = sg.Window.get_screen_size()  # scale with screen size
-        self.size = int(min((w / self.x_cells), (h / self.y_cells) * 0.75))
-        counter = 0
-        init_layout.append(
-            [sg.Text(f"Player at turn: {self.player_names[self.player_to_put_piece]}", key='the_current_player')])
-        for line in self.matrix:
-            new_line = []
-            for item in line:
-                if self.adversary_type != 0 and self.first_player == 1:
-                    if counter == int(self.y_cells / 2
-                                      - 1) * self.x_cells + int(self.x_cells / 2):
-                        new_line.append(sg.Button("", key=f"{counter}", button_color=('light gray', 'light gray'),
-                                                  image_data=button_image(self.size, self.size, 'black', False),
-                                                  border_width=0))
-                    else:
-                        new_line.append(sg.Button("", key=f"{counter}", button_color=('light gray', 'light gray'),
-                                                  image_data=button_image(self.size, self.size, 'gray'),
-                                                  border_width=0))
-                else:
-                    new_line.append(sg.Button("", key=f"{counter}", button_color=('light gray', 'light gray'),
-                                              image_data=button_image(self.size, self.size, 'gray'), border_width=0))
-                counter += 1
-            init_layout.append(new_line)
-        self.layout = init_layout
         
 def generate_move(self, evaluated_matrix, player):
         generated_matrix = []
