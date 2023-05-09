@@ -108,7 +108,7 @@ class TicTacToe:
         if int(values_list[6]) in range(3, 5) and int(values_list[7]) in range(3, 5):
             return adversary_type, first_player, int(values_list[6]), int(values_list[7]), values[4], values_list[0:2]
         return self.Information()
-    
+  
     def next_click(self, player):
         if self.draw():
             sg.popup("'It's a draw!")
@@ -167,7 +167,7 @@ class TicTacToe:
                 self.next_click(player)
         else:
             self.next_click(player)
-            
+      
     def generate_move(self, evaluated_matrix, player):
         generated_matrix = []
         for y in range(self.y_cells):
