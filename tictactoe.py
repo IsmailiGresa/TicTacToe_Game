@@ -41,7 +41,7 @@ class TicTacToe:
 
     def init_graphics(self):
         init_layout = []
-        w, h = sg.Window.get_screen_size()  # scale with screen size
+        w, h = sg.Window.get_screen_size()
         self.size = int(min((w / self.x_cells), (h / self.y_cells) * 0.75))
         counter = 0
         init_layout.append(
@@ -66,7 +66,7 @@ class TicTacToe:
             init_layout.append(new_line)
         self.layout = init_layout
 
-    def NewGame(self, adversary_type=1, first_player=1, x_cells=3, y_cells=3, is_swap2=False, player_names=["x", "o"]): #maybe this is useless
+    def NewGame(self, adversary_type=1, first_player=1, x_cells=3, y_cells=3, is_swap2=False, player_names=["x", "o"]):
         print(first_player)
         self.x_cells = x_cells
         self.y_cells = y_cells
@@ -109,66 +109,7 @@ class TicTacToe:
             return adversary_type, first_player, int(values_list[6]), int(values_list[7]), values[4], values_list[0:2]
         return self.Information()
     
-    def next_click(self, player):
-        if self.draw():
-            sg.popup("'It's a draw!")
-            self.window.close()
-            a, b, c, d, e, f = self.get_game_info()
-            self.new_game(a, b, c, d, e, f)
-
-        if self.ended(self.matrix):
-            if self.adversary_type == 0:
-                if player == 1:
-                    sg.popup("O won!")
-                else:
-                    sg.popup("X won!")
-            else:
-                sg.popup("Computer won!")
-            self.window.close()
-            a, b, c, d, e, f = self.get_game_info()
-            self.new_game(a, b, c, d, e, f)
-            return None
-        
-        event, values = self.window.read()
-        if self.valid_move(event):
-            self.update_button(player, self.window[event])
-            self.update_matrix(player, event)
-            self.window.refresh()
-            self.player_to_put_piece = (self.player_to_put_piece + 1) % 2
-            self.window['the_current_player'].update(
-                f"Player at turn: {self.player_names[self.player_to_put_piece]}")
-            if self.adversary_type == 0:  # for human
-                self.next_click(player * -1)
-
-            else:  # for machine
-                if self.ended(self.matrix):
-                    sg.popup("Human won")
-                    self.window.close()
-                    a, b, c, d, e, f = self.get_game_info()
-                    self.new_game(a, b, c, d, e, f)
-                # computer moves
-                self.player_to_put_piece = (self.player_to_put_piece + 1) % 2
-                self.window['the_current_player'].update(
-                    f"Player at turn: {self.player_names[self.player_to_put_piece]}")
-                self.window['the_current_player'].update("Player at turn: computer. Loading move")
-                self.window.refresh()
-                dummy, computer_x, computer_y = self.minimax_with_alfabeta_pruning(self.matrix, 2, 1000000, player * -1)
-                self.matrix[computer_y][computer_x] = player * -1
-                if player == 1:
-                    symbol = "o"
-                else:
-                    symbol = "x"
-                self.window[str(computer_y * self.x_cells + computer_x)].update(
-                    image_data=button_image(self.size, self.size, symbol, False))
-
-                # back to human
-                self.window['the_current_player'].update(
-                    f"Player at turn: {self.player_names[self.player_to_put_piece]}")
-                self.next_click(player)
-        else:
-            self.next_click(player)
-        
-def generate_move(self, evaluated_matrix, player):
+    def generate_move(self, evaluated_matrix, player):
         generated_matrix = []
         for y in range(self.y_cells):
             for x in range(self.x_cells):
@@ -187,7 +128,7 @@ def generate_move(self, evaluated_matrix, player):
         generated_matrix.append([aux, x, y])
         return generated_matrix
 
-def better_generate_move(self, evaluated_matrix, player):
+    def better_generate_move(self, evaluated_matrix, player):
         generated_matrix = []
         chain2 = []
         for axis in range(4):
@@ -249,73 +190,74 @@ def better_generate_move(self, evaluated_matrix, player):
                             break
         return generated_matrix
 
-def valid_move(self, event):
-    event = int(event)
-    y = int(event / self.x_cells)
-    x = event % self.x_cells
-    return self.matrix[y][x] == 0
+    def valid_move(self, event):
+        event = int(event)
+        y = int(event / self.x_cells)
+        x = event % self.x_cells
+        return self.matrix[y][x] == 0
 
-def update_matrix(self, player, event):
-    event = int(event)
-    y = int(event / self.x_cells)
-    x = event % self.x_cells
-    self.matrix[y][x] = player
+    def update_matrix(self, player, event):
+        event = int(event)
+        y = int(event / self.x_cells)
+        x = event % self.x_cells
+        self.matrix[y][x] = player
 
-def draw(self):
-    for i in self.matrix:
-        for j in i:
-            if j == 0:
-                return 0
-    return 1
+    def draw(self):
+        for i in self.matrix:
+            for j in i:
+                if j == 0:
+                    return 0
+        return 1
 
-def ended(self, evaluated_matrix):
-    for x in range(self.x_cells):
-        for y in range(self.y_cells):
-            if evaluated_matrix[y][x] != 0:
-                if x < self.x_cells - 2:
-                    if evaluated_matrix[y][x] == evaluated_matrix[y][x + 1] == evaluated_matrix[y][x + 2]:
-                        return True
-                if y < self.y_cells - 2:
-                    if evaluated_matrix[y][x] == evaluated_matrix[y + 1][x] == evaluated_matrix[y + 2][x]:
-                        return True
-                if x < self.x_cells - 2 and y < self.y_cells - 2:
-                    if evaluated_matrix[y][x] == evaluated_matrix[y + 1][x + 1] == evaluated_matrix[y + 2][x + 2]:
-                        return True
-                    if evaluated_matrix[y + 2][x] != 0:
-                        if evaluated_matrix[y + 2][x] == evaluated_matrix[y + 1][x + 1] == evaluated_matrix[y][x + 2]:
-                            return True
-    return False
-
-def get_score(self, evaluated_matrix, axis):
-    if axis == 0:
-        x_mod = 1
-        y_mod = 0
-    if axis == 1:
-        x_mod = 0
-        y_mod = 1
-    if axis == 2:
-        x_mod = 1
-        y_mod = 1
-    if axis == 3:
-        x_mod = -1
-        y_mod = 1
-    aux = [[item for item in line] for line in evaluated_matrix]
-    for y in range(self.y_cells):
+    def ended(self, evaluated_matrix):
         for x in range(self.x_cells):
-            if (0 <= y + y_mod < self.y_cells) and (0 <= x + x_mod < self.x_cells):
-                if aux[y + y_mod][x + x_mod] < 0 and aux[y][x] < 0:
-                    aux[y + y_mod][x + x_mod] *= 10 * abs(aux[y][x])
-                if aux[y + y_mod][x + x_mod] > 0 and aux[y][x] > 0:
-                    aux[y + y_mod][x + x_mod] *= 10 * abs(aux[y][x])
-    return np.sum(aux)
+            for y in range(self.y_cells):
+                if evaluated_matrix[y][x] != 0:
+                    if x < self.x_cells - 2:
+                        if evaluated_matrix[y][x] == evaluated_matrix[y][x + 1] == evaluated_matrix[y][x + 2]:
+                            return True
+                    if y < self.y_cells - 2:
+                        if evaluated_matrix[y][x] == evaluated_matrix[y + 1][x] == evaluated_matrix[y + 2][x]:
+                            return True
+                    if x < self.x_cells - 2 and y < self.y_cells - 2:
+                        if evaluated_matrix[y][x] == evaluated_matrix[y + 1][x + 1] == evaluated_matrix[y + 2][x + 2]:
+                            return True
+                        if evaluated_matrix[y + 2][x] != 0:
+                            if evaluated_matrix[y + 2][x] == evaluated_matrix[y + 1][x + 1] == evaluated_matrix[y][x + 2]:
+                                return True
+        return False
 
-def evaluate_state(self, evaluated_matrix):
-    score = self.get_score(evaluated_matrix, 0) + self.get_score(evaluated_matrix, 1)
-    if self.adversary_type > 1:
-        score += self.get_score(evaluated_matrix, 2)
-    if self.adversary_type > 2:
-        score += self.get_score(evaluated_matrix, 3)
-    return score
+    def get_score(self, evaluated_matrix, axis):
+        if axis == 0:
+            x_mod = 1
+            y_mod = 0
+        if axis == 1:
+            x_mod = 0
+            y_mod = 1
+        if axis == 2:
+            x_mod = 1
+            y_mod = 1
+        if axis == 3:
+            x_mod = -1
+            y_mod = 1
+        aux = [[item for item in line] for line in evaluated_matrix]
+        for y in range(self.y_cells):
+            for x in range(self.x_cells):
+                if (0 <= y + y_mod < self.y_cells) and (0 <= x + x_mod < self.x_cells):
+                    if aux[y + y_mod][x + x_mod] < 0 and aux[y][x] < 0:
+                        aux[y + y_mod][x + x_mod] *= 10 * abs(aux[y][x])
+                    if aux[y + y_mod][x + x_mod] > 0 and aux[y][x] > 0:
+                        aux[y + y_mod][x + x_mod] *= 10 * abs(aux[y][x])
+        return np.sum(aux)
+
+    def evaluate_state(self, evaluated_matrix):
+        score = self.get_score(evaluated_matrix, 0) + self.get_score(evaluated_matrix, 1)
+        if self.adversary_type > 1:
+            score += self.get_score(evaluated_matrix, 2)
+        if self.adversary_type > 2:
+            score += self.get_score(evaluated_matrix, 3)
+        return score
+    
 if __name__ == '__main__':
     Game = TicTacToe()
     a, b, c, d, e, f = Game.Information()
