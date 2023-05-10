@@ -320,7 +320,7 @@ class TicTacToe:
         if self.adversary_type > 2:
             score += self.Score(evaluated_matrix, 3)
         return score
-    
+      
     def Minimax_AlfaBetapruning(self, evaluated_matrix, levels, prev_beta, player):
         if levels == 0:  # if the end was reached, return
             return evaluated_matrix, 0, 0
@@ -342,7 +342,26 @@ class TicTacToe:
                     break
                 scores2.append(
                     0.9 * self.evaluate_state(self.Minimax_AlfaBetapruning(j[0], levels - 1, beta, player)[0]))
-    
+                  if beta > scores2[-1]:  # find better min
+                    beta = scores2[-1]
+                if alfa > beta:  # there is no reason to continue on this branch
+                    break
+            try:
+                min = np.argmin(scores2)
+                scores1.append(scores2[min])
+            except ValueError:
+                scores1.append(0)
+
+            if alfa < scores1[-1]:  # find better max
+                alfa = scores1[-1]
+            if alfa > prev_beta:  # there is no reason to continue on this branch
+                return i[0], i[1], i[2]
+        try:
+            max = np.argmax(scores1)
+        except ValueError:
+            return self.matrix, 0, 0
+        return moves1[max]
+
 if __name__ == '__main__':
     Game = TicTacToe()
     a, b, c, d, e = Game.Information()
