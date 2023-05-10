@@ -111,7 +111,7 @@ class TicTacToe:
         for key, value in values.items():
             values_list.append(value)
         print(values_list)
-        return adversary_type, first_player, int(values_list[5]), int(values_list[5]), values_list[0:2]
+        return adversary_type, first_player, 3, 3, values_list[0:2]
   
     def NextClick(self, player):
         if self.Draw():
