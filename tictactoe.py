@@ -156,7 +156,7 @@ class TicTacToe:
                     f"Player at turn: {self.player_names[self.player_to_put_piece]}")
                 self.window['the_current_player'].update("Player at turn: computer. Loading move")
                 self.window.refresh()
-                dummy, computer_x, computer_y = self.minimax_with_alfabeta_pruning(self.matrix, 2, 1000000, player * -1)
+                dummy, computer_x, computer_y = self.Minimax_AlfaBetapruning(self.matrix, 2, 1000000, player * -1)
                 self.matrix[computer_y][computer_x] = player * -1
                 if player == 1:
                     symbol = 'o'
@@ -327,22 +327,22 @@ class TicTacToe:
 
         moves1 = self.GenMoveAdvanced(evaluated_matrix, player)  # generate computer moves
         scores1 = []  # values for MIN function
-        if self.ended(evaluated_matrix):  # if it is final state, no need to look any further
+        if self.End(evaluated_matrix):  # if it is final state, no need to look any further
             return evaluated_matrix, 0, 0
         alfa = -100000000  # initialize alfa with an unreachably low value
         for i in moves1:  # iterate first level, choose MAX
-            if self.ended(i[0]):  # if it is a final state, no need to look any further
+            if self.End(i[0]):  # if it is a final state, no need to look any further
                 return i[0], i[1], i[2]
             moves2 = self.GenMoveAdvanced(i[0], -1 * player)  # generate human moves
             scores2 = []  # values for MIN function
             beta = 100000000  # initialize beta with an unreachably high value
             for j in moves2:  # iterate second level, choose min
-                if self.ended(j[0]):
+                if self.End(j[0]):
                     scores2.append(-10000)
                     break
                 scores2.append(
-                    0.9 * self.evaluate_state(self.Minimax_AlfaBetapruning(j[0], levels - 1, beta, player)[0]))
-                  if beta > scores2[-1]:  # find better min
+                    0.9 * self.Stat(self.Minimax_AlfaBetapruning(j[0], levels - 1, beta, player)[0]))
+                if beta > scores2[-1]:  # find better min
                     beta = scores2[-1]
                 if alfa > beta:  # there is no reason to continue on this branch
                     break
