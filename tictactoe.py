@@ -52,7 +52,7 @@ class TicTacToe:
                     if counter == int(self.y_cells / 2
                                       - 1) * self.x_cells + int(self.x_cells / 2):
                         new_line.append(sg.Button("", key=f"{counter}", button_color=('light gray', 'light gray'),
-                                                  image_data=ButtonImage(self.size, self.size, 'black', False),
+                                                  image_data=ButtonImage(self.size, self.size, 'x'),
                                                   border_width=0))
                     else:
                         new_line.append(sg.Button("", key=f"{counter}", button_color=('light gray', 'light gray'),
@@ -129,8 +129,8 @@ class TicTacToe:
             else:
                 sg.popup("Computer won!")
             self.window.close()
-            a, b, c, d, e = self.get_game_info()
-            self.new_game(a, b, c, d, e)
+            a, b, c, d, e = self.Information()
+            self.NewGame(a, b, c, d, e)
             return None
 
         event, values = self.window.read()
@@ -148,8 +148,8 @@ class TicTacToe:
                 if self.End(self.matrix):
                     sg.popup("Human won")
                     self.window.close()
-                    a, b, c, d, e = self.get_game_info()
-                    self.new_game(a, b, c, d, e)
+                    a, b, c, d, e = self.Information()
+                    self.NewGame(a, b, c, d, e)
                 # computer moves
                 self.player_to_put_piece = (self.player_to_put_piece + 1) % 2
                 self.window['the_current_player'].update(
