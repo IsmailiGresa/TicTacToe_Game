@@ -90,9 +90,9 @@ class TicTacToe:
 
     def Information(self):
         event, values = sg.Window('Tic Tac Toe',
-                                  [[sg.Text('Player1 name (white):'), sg.InputText()],
-                                   [sg.Text('Player2 name (black):'), sg.InputText()],
-                                   [sg.Radio('black First', "RADIO1", default=True, size=(10, 1)),sg.Radio('white First', "RADIO1")],
+                                  [[sg.Text('Player1 name (X):'), sg.InputText()],
+                                   [sg.Text('Player2 name (O):'), sg.InputText()],
+                                   [sg.Radio('X First', "RADIO1", default=True, size=(10, 1)),sg.Radio('O First', "RADIO1")],
                                    [sg.Button("Player vs Player"), sg.Button("Single Player"), ]
                                    ], margins=(40, 25)).read(close=True)
 
@@ -117,8 +117,6 @@ class TicTacToe:
         if self.Draw():
             sg.popup("'It's a draw!")
             self.window.close()
-            a, b, c, d, e = self.Information()
-            self.NewGame(a, b, c, d, e)
 
         if self.End(self.matrix):
             if self.adversary_type == 0:
@@ -129,11 +127,11 @@ class TicTacToe:
             else:
                 sg.popup("Computer won!")
             self.window.close()
-            a, b, c, d, e = self.Information()
-            self.NewGame(a, b, c, d, e)
             return None
 
         event, values = self.window.read()
+        if event is None:
+            return
         if self.ValidMove(event):
             self.UpdateButton(player, self.window[event])
             self.UpdateMatrix(player, event)
@@ -148,8 +146,6 @@ class TicTacToe:
                 if self.End(self.matrix):
                     sg.popup("Human won")
                     self.window.close()
-                    a, b, c, d, e = self.Information()
-                    self.NewGame(a, b, c, d, e)
                 # computer moves
                 self.player_to_put_piece = (self.player_to_put_piece + 1) % 2
                 self.window['the_current_player'].update(
@@ -159,7 +155,7 @@ class TicTacToe:
                 dummy, computer_x, computer_y = self.Minimax_AlfaBetapruning(self.matrix, 2, 1000000, player * -1)
                 self.matrix[computer_y][computer_x] = player * -1
                 if player == 1:
-                    symbol = 'o'
+                    symbol = 'o' 
                 else:
                     symbol = 'x'
                 self.window[str(computer_y * self.x_cells + computer_x)].update(
@@ -282,13 +278,14 @@ class TicTacToe:
                     if y < self.y_cells - 2:
                         if evaluated_matrix[y][x] == evaluated_matrix[y + 1][x] == evaluated_matrix[y + 2][x]:
                             return True
-                    if x < self.x_cells - 2 and y < self.y_cells - 2:
-                        if evaluated_matrix[y][x] == evaluated_matrix[y + 1][x + 1] == evaluated_matrix[y + 2][x + 2]:
-                            return True
-                        if evaluated_matrix[y + 2][x] != 0:
-                            if evaluated_matrix[y + 2][x] == evaluated_matrix[y + 1][x + 1] == evaluated_matrix[y][x + 2]:
+                    if x < self.x_cells - 2:
+                        if y < self.y_cells - 2:
+                            if evaluated_matrix[y][x] == evaluated_matrix[y + 1][x + 1] == evaluated_matrix[y + 2][x + 2]:
                                 return True
-        return False
+                    if x >= 2:
+                        if y < self.y_cells - 2:
+                            if evaluated_matrix[y][x] == evaluated_matrix[y + 1][x - 1] == evaluated_matrix[y + 2][x - 2]:
+                                return True
 
     def Score(self, evaluated_matrix, axis):
         if axis == 0:
