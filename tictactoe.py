@@ -26,15 +26,15 @@ class TicTacToe:
         self.matrix = []
         self.x_cells = 3
         self.y_cells = 3
-        self.adversary_type = 0
+        self.OpponentType = 0
         self.window = sg.Window
-        self.first_player = -1
-        self.player_to_put_piece = 0
+        self.FirstPlayer = -1
+        self.PlayerToMove = 0
         self.player_names = []
 
     def Table(self):
         self.matrix = np.zeros((self.y_cells, self.x_cells))
-        if self.adversary_type != 0 and self.first_player == 1:
+        if self.OpponentType != 0 and self.FirstPlayer == 1:
             # Set the first position randomly
             rand_y = np.random.randint(0, self.y_cells)
             rand_x = np.random.randint(0, self.x_cells)
@@ -47,20 +47,20 @@ class TicTacToe:
         self.size = int(min((w / self.x_cells), (h / self.y_cells) * 0.75))
         counter = 0
         Layout.append(
-            [sg.Text(f"Player at turn: {self.player_names[self.player_to_put_piece]}", key='the_current_player')])
+            [sg.Text(f"Player at turn: {self.player_names[self.PlayerToMove]}", key='CurrentPlayer')])
         for y in range(self.y_cells):
-            new_line = []
+            NewLine = []
             for x in range(self.x_cells):
                 if self.matrix[y][x] == 1:
-                    new_line.append(sg.Button("", key=f"{counter}", button_color=('light gray', 'light gray'),
-                                          image_data=ButtonImage(self.size, self.size, 'x'),
+                    NewLine.append(sg.Button("", key=f"{counter}", button_color=('light gray', 'light gray'),
+                                          ImageData=ButtonImage(self.size, self.size, 'x'),
                                           border_width=0))
                 else:
-                        new_line.append(sg.Button("", key=f"{counter}", button_color=('light gray', 'light gray'),
-                                                  image_data=ButtonImage(self.size, self.size, 'gray'),
+                        NewLine.append(sg.Button("", key=f"{counter}", button_color=('light gray', 'light gray'),
+                                                  ImageData=ButtonImage(self.size, self.size, 'gray'),
                                                   border_width=0))
                 counter += 1
-            Layout.append(new_line)
+            Layout.append(NewLine)
         self.layout = Layout
 
     def UpdateButton(self, player, button):
@@ -68,48 +68,48 @@ class TicTacToe:
             symbol = 'x'
         else:
             symbol = 'o'
-        button.update(image_data=ButtonImage(self.size, self.size, symbol))
+        button.update(ImageData=ButtonImage(self.size, self.size, symbol))
         return None
 
-    def NewGame(self, adversary_type=1, first_player=1, x_cells=3, y_cells=3, player_names=["x", "o"]):
-        print(first_player)
+    def NewGame(self, OpponentType=1, FirstPlayer=1, x_cells=3, y_cells=3, player_names=["x", "o"]):
+        print(FirstPlayer)
         self.x_cells = x_cells
         self.y_cells = y_cells
-        self.adversary_type = adversary_type
-        self.player_to_put_piece = 0 if first_player == -1 else 1
-        self.first_player = first_player
+        self.OpponentType = OpponentType
+        self.PlayerToMove = 0 if FirstPlayer == -1 else 1
+        self.FirstPlayer = FirstPlayer
         self.player_names = player_names
-        if adversary_type != 0:
+        if OpponentType != 0:
             self.player_names[1] = "computer. Loading move"
         self.Table()
         self.Graphics()
         self.window = sg.Window('TicTacToe', self.layout, element_padding=((0, 0), (0, 0)), margins=(0, 0))
         self.NextClick(-1)
 
-    def Information(self):
+    def Info(self):
         event, values = sg.Window('Tic Tac Toe',
-                                  [[sg.Text('Player1 name (X):'), sg.InputText()],
-                                   [sg.Text('Player2 name (O):'), sg.InputText()],
+                                  [[sg.Text('Player 1 name (X):'), sg.InputText()],
+                                   [sg.Text('Player 2 name (O):'), sg.InputText()],
                                    [sg.Radio('X First', "RADIO1", default=True, size=(10, 1)),sg.Radio('O First', "RADIO1")],
                                    [sg.Button("Player vs Player"), sg.Button("Single Player"), ]
                                    ], margins=(40, 25)).read(close=True)
 
         if event in (sg.WIN_CLOSED, 'Exit'):
             return None
-        adversary_type = 0
+        OpponentType = 0
         if event == "Single Player":
-            adversary_type = 3
+            OpponentType = 1
 
         if values[2]:
-            first_player = 1
+            FirstPlayer = 1
         else:
-            first_player = -1
+            FirstPlayer = -1
 
         values_list = []
         for key, value in values.items():
             values_list.append(value)
         print(values_list)
-        return adversary_type, first_player, 3, 3, values_list[0:2]
+        return OpponentType, FirstPlayer, 3, 3, values_list[0:2]
   
     def NextClick(self, player):
         if self.Draw():
@@ -117,7 +117,7 @@ class TicTacToe:
             self.window.close()
 
         if self.End(self.matrix):
-            if self.adversary_type == 0:
+            if self.OpponentType == 0:
                 if player == 1:
                     sg.popup("O won!")
                 else:
@@ -134,20 +134,20 @@ class TicTacToe:
             self.UpdateButton(player, self.window[event])
             self.UpdateMatrix(player, event)
             self.window.refresh()
-            key='the_current_player'
-            self.player_to_put_piece = (self.player_to_put_piece + 1) % 2
+            key='CurrentPlayer'
+            self.PlayerToMove = (self.PlayerToMove + 1) % 2
             self.window[key].update(
-                f"Player at turn: {self.player_names[self.player_to_put_piece]}")
-            if self.adversary_type == 0:  # for human
+                f"Player at turn: {self.player_names[self.PlayerToMove]}")
+            if self.OpponentType == 0:  # for human
                 self.NextClick(player * -1)
             else:  # for machine
                 if self.End(self.matrix):
                     sg.popup("Human won")
                     self.window.close()
                 # computer moves
-                self.player_to_put_piece = (self.player_to_put_piece + 1) % 2
+                self.PlayerToMove = (self.PlayerToMove + 1) % 2
                 self.window[key].update(
-                    f"Player at turn: {self.player_names[self.player_to_put_piece]}")
+                    f"Player at turn: {self.player_names[self.PlayerToMove]}")
                 self.window[key].update("Player at turn: computer. Loading move")
                 self.window.refresh()
                 dummy, computer_x, computer_y = self.Minimax_AlfaBetapruning(self.matrix, 2, 1000000, player * -1)
@@ -157,11 +157,10 @@ class TicTacToe:
                 else:
                     symbol = 'x'
                 self.window[str(computer_y * self.x_cells + computer_x)].update(
-                    image_data=ButtonImage(self.size, self.size, symbol))
-
+                    ImageData=ButtonImage(self.size, self.size, symbol))
                 # back to human
                 self.window[key].update(
-                    f"Player at turn: {self.player_names[self.player_to_put_piece]}")
+                    f"Player at turn: {self.player_names[self.PlayerToMove]}")
                 self.NextClick(player)
         else:
             self.NextClick(player)
@@ -308,11 +307,11 @@ class TicTacToe:
                         aux[y + y_mod][x + x_mod] *= 10 * abs(aux[y][x])
         return np.sum(aux)
 
-    def Stat(self, evaluated_matrix):
+    def State(self, evaluated_matrix):
         score = self.Score(evaluated_matrix, 0) + self.Score(evaluated_matrix, 1)
-        if self.adversary_type > 1:
+        if self.OpponentType == 0:
             score += self.Score(evaluated_matrix, 2)
-        if self.adversary_type > 2:
+        if self.OpponentType == 1:
             score += self.Score(evaluated_matrix, 3)
         return score
       
@@ -336,7 +335,7 @@ class TicTacToe:
                     scores2.append(-10000)
                     break
                 scores2.append(
-                    0.9 * self.Stat(self.Minimax_AlfaBetapruning(j[0], levels - 1, beta, player)[0]))
+                    0.9 * self.State(self.Minimax_AlfaBetapruning(j[0], levels - 1, beta, player)[0]))
                 if beta > scores2[-1]:  # find better min
                     beta = scores2[-1]
                 if alfa > beta:  # there is no reason to continue on this branch
@@ -359,7 +358,7 @@ class TicTacToe:
 
 if __name__ == '__main__':
     Game = TicTacToe()
-    a, b, c, d, e = Game.Information()
+    a, b, c, d, e = Game.Info()
     Game.NewGame(a, b, c, d, e)
 
 
