@@ -32,38 +32,36 @@ class TicTacToe:
         self.player_to_put_piece = 0
         self.player_names = []
 
-    def init_table(self):
+    def Table(self):
         self.matrix = np.zeros((self.y_cells, self.x_cells))
         if self.adversary_type != 0 and self.first_player == 1:
-            self.matrix[int(self.y_cells / 2) - 1][int(self.x_cells / 2)] = 1
+            # Set the first position randomly
+            rand_y = np.random.randint(0, self.y_cells)
+            rand_x = np.random.randint(0, self.x_cells)
+            self.matrix[rand_y][rand_x] = 1
         return None
 
     def Graphics(self):
-        init_layout = []
+        Layout = []
         w, h = sg.Window.get_screen_size()
         self.size = int(min((w / self.x_cells), (h / self.y_cells) * 0.75))
         counter = 0
-        init_layout.append(
+        Layout.append(
             [sg.Text(f"Player at turn: {self.player_names[self.player_to_put_piece]}", key='the_current_player')])
-        for line in self.matrix:
+        for y in range(self.y_cells):
             new_line = []
-            for item in line:
-                if self.adversary_type != 0 and self.first_player == 1:
-                    if counter == int(self.y_cells / 2
-                                      - 1) * self.x_cells + int(self.x_cells / 2):
-                        new_line.append(sg.Button("", key=f"{counter}", button_color=('light gray', 'light gray'),
-                                                  image_data=ButtonImage(self.size, self.size, 'x'),
-                                                  border_width=0))
-                    else:
+            for x in range(self.x_cells):
+                if self.matrix[y][x] == 1:
+                    new_line.append(sg.Button("", key=f"{counter}", button_color=('light gray', 'light gray'),
+                                          image_data=ButtonImage(self.size, self.size, 'x'),
+                                          border_width=0))
+                else:
                         new_line.append(sg.Button("", key=f"{counter}", button_color=('light gray', 'light gray'),
                                                   image_data=ButtonImage(self.size, self.size, 'gray'),
                                                   border_width=0))
-                else:
-                    new_line.append(sg.Button("", key=f"{counter}", button_color=('light gray', 'light gray'),
-                                              image_data=ButtonImage(self.size, self.size, 'gray'), border_width=0))
                 counter += 1
-            init_layout.append(new_line)
-        self.layout = init_layout
+            Layout.append(new_line)
+        self.layout = Layout
 
     def UpdateButton(self, player, button):
         if player == 1:
@@ -83,7 +81,7 @@ class TicTacToe:
         self.player_names = player_names
         if adversary_type != 0:
             self.player_names[1] = "computer. Loading move"
-        self.init_table()
+        self.Table()
         self.Graphics()
         self.window = sg.Window('TicTacToe', self.layout, element_padding=((0, 0), (0, 0)), margins=(0, 0))
         self.NextClick(-1)
@@ -100,7 +98,7 @@ class TicTacToe:
             return None
         adversary_type = 0
         if event == "Single Player":
-            adversary_type = 1
+            adversary_type = 3
 
         if values[2]:
             first_player = 1
@@ -136,21 +134,21 @@ class TicTacToe:
             self.UpdateButton(player, self.window[event])
             self.UpdateMatrix(player, event)
             self.window.refresh()
+            key='the_current_player'
             self.player_to_put_piece = (self.player_to_put_piece + 1) % 2
-            self.window['the_current_player'].update(
+            self.window[key].update(
                 f"Player at turn: {self.player_names[self.player_to_put_piece]}")
             if self.adversary_type == 0:  # for human
                 self.NextClick(player * -1)
-
             else:  # for machine
                 if self.End(self.matrix):
                     sg.popup("Human won")
                     self.window.close()
                 # computer moves
                 self.player_to_put_piece = (self.player_to_put_piece + 1) % 2
-                self.window['the_current_player'].update(
+                self.window[key].update(
                     f"Player at turn: {self.player_names[self.player_to_put_piece]}")
-                self.window['the_current_player'].update("Player at turn: computer. Loading move")
+                self.window[key].update("Player at turn: computer. Loading move")
                 self.window.refresh()
                 dummy, computer_x, computer_y = self.Minimax_AlfaBetapruning(self.matrix, 2, 1000000, player * -1)
                 self.matrix[computer_y][computer_x] = player * -1
@@ -162,7 +160,7 @@ class TicTacToe:
                     image_data=ButtonImage(self.size, self.size, symbol))
 
                 # back to human
-                self.window['the_current_player'].update(
+                self.window[key].update(
                     f"Player at turn: {self.player_names[self.player_to_put_piece]}")
                 self.NextClick(player)
         else:
