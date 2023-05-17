@@ -53,12 +53,12 @@ class TicTacToe:
             for x in range(self.x_cells):
                 if self.matrix[y][x] == 1:
                     NewLine.append(sg.Button("", key=f"{counter}", button_color=('light gray', 'light gray'),
-                                          ImageData=ButtonImage(self.size, self.size, 'x'),
+                                          image_data=ButtonImage(self.size, self.size, 'x'),
                                           border_width=0))
                 else:
-                        NewLine.append(sg.Button("", key=f"{counter}", button_color=('light gray', 'light gray'),
-                                                  ImageData=ButtonImage(self.size, self.size, 'gray'),
-                                                  border_width=0))
+                    NewLine.append(sg.Button("", key=f"{counter}", button_color=('light gray', 'light gray'),
+                                          image_data=ButtonImage(self.size, self.size, 'gray'),
+                                          border_width=0))
                 counter += 1
             Layout.append(NewLine)
         self.layout = Layout
@@ -68,7 +68,7 @@ class TicTacToe:
             symbol = 'x'
         else:
             symbol = 'o'
-        button.update(ImageData=ButtonImage(self.size, self.size, symbol))
+        button.update(image_data=ButtonImage(self.size, self.size, symbol))
         return None
 
     def NewGame(self, OpponentType=1, FirstPlayer=1, x_cells=3, y_cells=3, player_names=["x", "o"]):
@@ -157,7 +157,7 @@ class TicTacToe:
                 else:
                     symbol = 'x'
                 self.window[str(computer_y * self.x_cells + computer_x)].update(
-                    ImageData=ButtonImage(self.size, self.size, symbol))
+                    image_data=ButtonImage(self.size, self.size, symbol))
                 # back to human
                 self.window[key].update(
                     f"Player at turn: {self.player_names[self.PlayerToMove]}")
