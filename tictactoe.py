@@ -122,8 +122,6 @@ class TicTacToe:
                     sg.popup("O won!")
                 else:
                     sg.popup("X won!")
-            else:
-                sg.popup("Computer won!")
             self.window.close()
             return None
 
