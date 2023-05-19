@@ -119,6 +119,8 @@ class TicTacToe:
                     sg.popup("O won!")
                 else:
                     sg.popup("X won!")
+            else:  # If it's a player vs computer game
+                sg.popup("Computer won!")
             self.window.close()
             return None# Return None to exit the method
 
@@ -161,28 +163,29 @@ class TicTacToe:
             self.NextClick(player)  # Recursively call NextClick if the clicked button does not represent a valid move
       
     def GenMove(self, evaluated_matrix, player):
-        generated_matrix = []
-        for y in range(self.y_cells):
-            for x in range(self.x_cells):
-                if (x + 1 < self.x_cells and evaluated_matrix[y][x + 1] != 0) or \
-                    (x + 1 < self.x_cells and y + 1 < self.y_cells and evaluated_matrix[y + 1][
-                        x + 1] != 0) or \
-                    (x + 1 < self.x_cells and y - 1 >= 0 and evaluated_matrix[y - 1][x + 1] != 0) or \
-                    (x - 1 >= 0 and y + 1 < self.y_cells and evaluated_matrix[y + 1][x - 1] != 0) or \
-                    (x - 1 >= 0 and y - 1 >= 0 and evaluated_matrix[y - 1][x - 1] != 0) or \
-                    (x - 1 >= 0 and evaluated_matrix[y][x - 1] != 0) or \
-                    (y + 1 < self.y_cells and evaluated_matrix[y + 1][x] != 0) or \
-                    (y - 1 >= 0 and evaluated_matrix[y - 1][x] != 0):
-                    if evaluated_matrix[y][x] == 0:
-                        aux = [[item for item in line] for line in evaluated_matrix]
-                        aux[y][x] = player
-        generated_matrix.append([aux, x, y])
-        return generated_matrix
+            generated_matrix = [] # Initialize an empty list to store generated matrices
+            for y in range(self.y_cells):  # Iterate over the rows of the evaluated matrix
+                for x in range(self.x_cells):  # Iterate over the columns of the evaluated matrix
+                    if (x + 1 < self.x_cells and evaluated_matrix[y][x + 1] != 0) or \
+                        (x + 1 < self.x_cells and y + 1 < self.y_cells and evaluated_matrix[y + 1][
+                            x + 1] != 0) or \
+                        (x + 1 < self.x_cells and y - 1 >= 0 and evaluated_matrix[y - 1][x + 1] != 0) or \
+                        (x - 1 >= 0 and y + 1 < self.y_cells and evaluated_matrix[y + 1][x - 1] != 0) or \
+                        (x - 1 >= 0 and y - 1 >= 0 and evaluated_matrix[y - 1][x - 1] != 0) or \
+                        (x - 1 >= 0 and evaluated_matrix[y][x - 1] != 0) or \
+                        (y + 1 < self.y_cells and evaluated_matrix[y + 1][x] != 0) or \
+                        (y - 1 >= 0 and evaluated_matrix[y - 1][x] != 0):
+                        if evaluated_matrix[y][x] == 0:  # Check if the current cell is empty
+                            aux = [[item for item in line] for line in evaluated_matrix]  # Create a copy of the evaluated matrix
+                            aux[y][x] = player  # Update the current cell with the player's symbol
+            generated_matrix.append([aux, x, y]) # Add the generated matrix and its coordinates to the list
+            return generated_matrix # Return the list of generated matrices
 
     def GenMoveAdvanced(self, evaluated_matrix, player):
-        generated_matrix = []
-        chain2 = []
-        for axis in range(4):
+        generated_matrix = [] # Initialize an empty list to store generated matrices
+        chain2 = []# Initialize an empty list to store chain matrices
+        for axis in range(4): # Iterate over the four axes (0: horizontal, 1: vertical, 2: diagonal, 3: anti-diagonal)
+            # Set x_mod and y_mod based on the current axis
             if axis == 0:
                 x_mod = 1
                 y_mod = 0
@@ -195,7 +198,7 @@ class TicTacToe:
             if axis == 3:
                 x_mod = -1
                 y_mod = 1
-            aux = [[item for item in line] for line in evaluated_matrix]
+            aux = [[item for item in line] for line in evaluated_matrix]  # Create a copy of the evaluated matrix
             for y in range(self.y_cells):
                 for x in range(self.x_cells):
                     if (0 <= y + y_mod < self.y_cells) and (0 <= x + x_mod < self.x_cells):
@@ -210,21 +213,21 @@ class TicTacToe:
                         # the place at the end of a chain
                                 if self.y_cells > y + y_mod > 0 < x + x_mod < self.x_cells and \
                                         aux[y + y_mod][x + x_mod] == 0:
-                                    to_add = [[item for item in line] for line in evaluated_matrix]
-                                    to_add[y + y_mod][x + x_mod] = player
-                                    chain2.append([to_add, x + x_mod, y + y_mod])
+                                    to_add = [[item for item in line] for line in evaluated_matrix] # Create a copy of the evaluated matrix
+                                    to_add[y + y_mod][x + x_mod] = player  # Update the empty place with the player's symbol
+                                    chain2.append([to_add, x + x_mod, y + y_mod]) # Add the chain matrix and its coordinates to chain2
                                 # the place at the start of a 2 piece chain
                                 if self.y_cells > y - 2 * y_mod > 0 < x - 2 * x_mod < self.x_cells and \
                                         aux[y - 2 * y_mod][x - 2 * x_mod] == 0:
-                                    to_add = [[item for item in line] for line in evaluated_matrix]
-                                    to_add[y - 2 * y_mod][x - 2 * x_mod] = player
-                                    chain2.append([to_add, x - 2 * x_mod, y - 2 * y_mod])
+                                    to_add = [[item for item in line] for line in evaluated_matrix]  # Create a copy of the evaluated matrix
+                                    to_add[y - 2 * y_mod][x - 2 * x_mod] = player  # Update the empty place with the player's symbol
+                                    chain2.append([to_add, x - 2 * x_mod, y - 2 * y_mod])  # Add the chain matrix and its coordinates to chain2
         for x in chain2:
-            generated_matrix.append(x)
+                    generated_matrix.append(x)  # Add the chain matrices to the generated matrices list
 
-        if len(generated_matrix) == 0:
+        if len(generated_matrix) == 0:  # If no chain matrices were generated
             for y in range(self.y_cells):
-                for x in range(self.x_cells):
+                for x in range(self.x_cells):  # Check for possible moves based on the neighboring cells
                     if (x + 1 < self.x_cells and evaluated_matrix[y][x + 1] != 0) or \
                             (x + 1 < self.x_cells and y + 1 < self.y_cells and evaluated_matrix[y + 1][
                                 x + 1] != 0) or \
@@ -235,15 +238,15 @@ class TicTacToe:
                             (y + 1 < self.y_cells and evaluated_matrix[y + 1][x] != 0) or \
                             (y - 1 >= 0 and evaluated_matrix[y - 1][x] != 0):
                         if evaluated_matrix[y][x] == 0:
-                            aux = [[item for item in line] for line in evaluated_matrix]
-                            aux[y][x] = player
-                            generated_matrix.append([aux, x, y])
+                            aux = [[item for item in line] for line in evaluated_matrix] # Create a copy of the evaluated matrix
+                            aux[y][x] = player  # Update the empty place with the player's symbol
+                            generated_matrix.append([aux, x, y])  # Add the generated matrix and its coordinates to the list
                             break
-        return generated_matrix
+        return generated_matrix  # Return the list of generated matrices
 
-    def ValidMove(self, event):
-        event = int(event)
-        y = int(event / self.x_cells)
+    def ValidMove(self, event): # This function takes an event as input and checks if it is a valid move.
+        event = int(event) #the event is represented as a numeric value
+        y = int(event / self.x_cells) # gives the row index 'y' of the cell in a matrix
         x = event % self.x_cells
         return self.matrix[y][x] == 0
 
@@ -254,32 +257,33 @@ class TicTacToe:
         self.matrix[y][x] = player
 
     def Draw(self):
-        for i in self.matrix:
+        for i in self.matrix: # Iterate over each row 'i' in the matrix
             for j in i:
-                if j == 0:
-                    return 0
-        return 1
+                if j == 0: #it means there is an empty cell.
+                    return 0  # If an empty cell is found, return 0 to indicate that the matrix is not in a draw state.
+        return 1  # If the loop completes without finding any empty cells, it means the matrix is in a draw state, so return 1.
 
-    def End(self, evaluated_matrix):
-        for x in range(self.x_cells):
+    def End(self, evaluated_matrix):  # Check if the game has ended by evaluating the provided matrix.
+        for x in range(self.x_cells):    #Iterate over each column in the matrix.
             for y in range(self.y_cells):
-                if evaluated_matrix[y][x] != 0:
-                    if x < self.x_cells - 2:
-                        if evaluated_matrix[y][x] == evaluated_matrix[y][x + 1] == evaluated_matrix[y][x + 2]:
+                if evaluated_matrix[y][x] != 0: # Check if the cell at position (y, x) is not empty.
+                    if x < self.x_cells - 2: # Check if there are at least two more columns to the right.
+                        if evaluated_matrix[y][x] == evaluated_matrix[y][x + 1] == evaluated_matrix[y][x + 2]: # Check if three consecutive cells in a row are equal.
                             return True
-                    if y < self.y_cells - 2:
-                        if evaluated_matrix[y][x] == evaluated_matrix[y + 1][x] == evaluated_matrix[y + 2][x]:
+                    if y < self.y_cells - 2: # Check if there are at least two more rows below.
+                        if evaluated_matrix[y][x] == evaluated_matrix[y + 1][x] == evaluated_matrix[y + 2][x]: # Check if three consecutive cells in a column are equal.
                             return True
                     if x < self.x_cells - 2:
-                        if y < self.y_cells - 2:
-                            if evaluated_matrix[y][x] == evaluated_matrix[y + 1][x + 1] == evaluated_matrix[y + 2][x + 2]:
+                        if y < self.y_cells - 2: # Check if there are at least two more columns and rows to the right and below.
+                            if evaluated_matrix[y][x] == evaluated_matrix[y + 1][x + 1] == evaluated_matrix[y + 2][x + 2]:  # Check if three consecutive cells along the diagonal are equal.
                                 return True
                     if x >= 2:
-                        if y < self.y_cells - 2:
+                        if y < self.y_cells - 2:  # Check if there are at least two more columns to the left and two more rows below.
                             if evaluated_matrix[y][x] == evaluated_matrix[y + 1][x - 1] == evaluated_matrix[y + 2][x - 2]:
+                                # Check if three consecutive cells along the opposite diagonal are equal.
                                 return True
 
-    def Score(self, evaluated_matrix, axis):
+    def Score(self, evaluated_matrix, axis): # This function calculates the score of the evaluated matrix along a specified axis.
         if axis == 0:
             x_mod = 1
             y_mod = 0
@@ -292,64 +296,69 @@ class TicTacToe:
         if axis == 3:
             x_mod = -1
             y_mod = 1
-        aux = [[item for item in line] for line in evaluated_matrix]
-        for y in range(self.y_cells):
+    # Set the x and y modifiers based on the specified axis:
+    # Axis 0: Horizontal
+    # Axis 1: Vertical
+    # Axis 2: Diagonal (top-left to bottom-right)
+    # Axis 3: Diagonal (top-right to bottom-left)
+        aux = [[item for item in line] for line in evaluated_matrix] # Create a copy of the evaluated matrix to perform operations without modifying the original matrix.
+        for y in range(self.y_cells): # Iterate over each row 'y' in the matrix.
             for x in range(self.x_cells):
-                if (0 <= y + y_mod < self.y_cells) and (0 <= x + x_mod < self.x_cells):
-                    if aux[y + y_mod][x + x_mod] < 0 and aux[y][x] < 0:
-                        aux[y + y_mod][x + x_mod] *= 10 * abs(aux[y][x])
-                    if aux[y + y_mod][x + x_mod] > 0 and aux[y][x] > 0:
-                        aux[y + y_mod][x + x_mod] *= 10 * abs(aux[y][x])
-        return np.sum(aux)
+                if (0 <= y + y_mod < self.y_cells) and (0 <= x + x_mod < self.x_cells): # Check if the neighboring cell in the specified direction is within the matrix boundaries.
+                    if aux[y + y_mod][x + x_mod] < 0 and aux[y][x] < 0:  # Check if both the current cell and the neighboring cell are negative.
+                        aux[y + y_mod][x + x_mod] *= 10 * abs(aux[y][x]) # Multiply the value of the neighboring cell by 10 times the absolute value of the current cell.
+                    if aux[y + y_mod][x + x_mod] > 0 and aux[y][x] > 0: # Check if both the current cell and the neighboring cell are positive.
+                        aux[y + y_mod][x + x_mod] *= 10 * abs(aux[y][x]) # Multiply the value of the neighboring cell by 10 times the absolute value of the current cell.
+        return np.sum(aux) # Return the sum of all elements in the modified matrix as the score.
 
-    def State(self, evaluated_matrix):
-        score = self.Score(evaluated_matrix, 0) + self.Score(evaluated_matrix, 1)
+    def State(self, evaluated_matrix):# This function calculates the state of the evaluated matrix
+        score = self.Score(evaluated_matrix, 0) + self.Score(evaluated_matrix, 1) # Calculate the score by summing the scores along the horizontal (axis 0) and vertical (axis 1) directions
         if self.OpponentType == 0:
-            score += self.Score(evaluated_matrix, 2)
+            score += self.Score(evaluated_matrix, 2)  # If the opponent type is 0, calculate the score along the diagonal (top-left to bottom-right) direction (axis 2) and add it to the total score.
         if self.OpponentType == 1:
-            score += self.Score(evaluated_matrix, 3)
+            score += self.Score(evaluated_matrix, 3) # If the opponent type is 1, calculate the score along the diagonal (top-right to bottom-left) direction (axis 3) and add it to the total score.
         return score
       
     def Minimax_AlfaBetapruning(self, evaluated_matrix, levels, prev_beta, player):
-        if levels == 0:  # if the end was reached, return
-            return evaluated_matrix, 0, 0
+            if levels == 0:  # if the end was reached, return
+                return evaluated_matrix, 0, 0
 
-        moves1 = self.GenMoveAdvanced(evaluated_matrix, player)  # generate computer moves
-        scores1 = []  # values for MIN function
-        if self.End(evaluated_matrix):  # if it is final state, no need to look any further
-            return evaluated_matrix, 0, 0
-        alfa = -100000000  # initialize alfa with an unreachably low value
-        for i in moves1:  # iterate first level, choose MAX
-            if self.End(i[0]):  # if it is a final state, no need to look any further
-                return i[0], i[1], i[2]
-            moves2 = self.GenMoveAdvanced(i[0], -1 * player)  # generate human moves
-            scores2 = []  # values for MIN function
-            beta = 100000000  # initialize beta with an unreachably high value
-            for j in moves2:  # iterate second level, choose min
-                if self.End(j[0]):
-                    scores2.append(-10000)
-                    break
-                scores2.append(
-                    0.9 * self.State(self.Minimax_AlfaBetapruning(j[0], levels - 1, beta, player)[0]))
-                if beta > scores2[-1]:  # find better min
-                    beta = scores2[-1]
-                if alfa > beta:  # there is no reason to continue on this branch
-                    break
+            moves1 = self.GenMoveAdvanced(evaluated_matrix, player)  # generate computer moves
+            scores1 = []  # values for MIN function
+            if self.End(evaluated_matrix):  # if it is final state, no need to look any further
+                return evaluated_matrix, 0, 0
+            alfa = -100000000  # initialize alfa with an unreachably low value
+            for i in moves1:  # iterate first level, choose MAX
+                if self.End(i[0]):  # if it is a final state, no need to look any further
+                    return i[0], i[1], i[2]
+                moves2 = self.GenMoveAdvanced(i[0], -1 * player)  # generate human moves
+                scores2 = []  # values for MIN function
+                beta = 100000000  # initialize beta with an unreachably high value
+                for j in moves2:  # iterate second level, choose min
+                    if self.End(j[0]):
+                        scores2.append(-10000)
+                        break
+                    scores2.append(
+                        0.9 * self.State(self.Minimax_AlfaBetapruning(j[0], levels - 1, beta, player)[0]))
+                    if beta > scores2[-1]:  # find better min
+                        beta = scores2[-1]
+                    if alfa > beta:  # there is no reason to continue on this branch
+                        break
+                try:
+                    min = np.argmin(scores2)
+                    scores1.append(scores2[min])
+                except ValueError:
+                    scores1.append(0)
+
+                if alfa < scores1[-1]:  # find better max
+                    alfa = scores1[-1]
+                if alfa > prev_beta:  # there is no reason to continue on this branch
+                    return i[0], i[1], i[2]
             try:
-                min = np.argmin(scores2)
-                scores1.append(scores2[min])
+                max = np.argmax(scores1)
             except ValueError:
-                scores1.append(0)
-
-            if alfa < scores1[-1]:  # find better max
-                alfa = scores1[-1]
-            if alfa > prev_beta:  # there is no reason to continue on this branch
-                return i[0], i[1], i[2]
-        try:
-            max = np.argmax(scores1)
-        except ValueError:
-            return self.matrix, 0, 0
-        return moves1[max]
+                return self.matrix, 0, 0
+            return moves1[max]
 
 if __name__ == '__main__':
     Game = TicTacToe()
